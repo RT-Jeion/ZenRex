@@ -1,2 +1,767 @@
-Hello World.
-This is ZenRex
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ZenRex — AI Automation for Businesses</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   TOKENS
+   ============================================================ */
+:root{
+  --void:        #0B0E14;   /* base background — storm-navy */
+  --mist:        #151B24;   /* card / panel surface */
+  --mist-2:      #1D2530;   /* raised panel */
+  --cloud:       #ECEEF2;   /* primary text */
+  --fog:         #8A93A3;   /* secondary text */
+  --fog-dim:     #5A6474;   /* tertiary / hairlines */
+  --ember:       #C43E2C;   /* RT — technology accent */
+  --ember-soft:  #E2694A;
+  --graphite:    #4A5D7C;   /* Z — business accent */
+  --graphite-soft:#7590B5;
+  --dawn:        #D9A441;   /* single warm risk-color — the Vision section */
+
+  --display: 'Space Grotesk', sans-serif;
+  --body: 'IBM Plex Sans', sans-serif;
+  --mono: 'IBM Plex Mono', monospace;
+
+  --edge: 1px solid rgba(236,238,242,0.08);
+  --container: 1180px;
+}
+
+*,*::before,*::after{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+@media (prefers-reduced-motion: reduce){
+  html{scroll-behavior:auto;}
+  *{animation-duration:0.01ms !important; animation-iteration-count:1 !important; transition-duration:0.01ms !important;}
+}
+body{
+  margin:0;
+  background:var(--void);
+  color:var(--cloud);
+  font-family:var(--body);
+  font-size:16px;
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+}
+img{max-width:100%;display:block;}
+a{color:inherit;text-decoration:none;}
+::selection{background:var(--ember);color:var(--cloud);}
+:focus-visible{outline:2px solid var(--dawn);outline-offset:3px;}
+
+.wrap{max-width:var(--container);margin:0 auto;padding:0 28px;}
+.eyebrow{
+  font-family:var(--mono);
+  font-size:12.5px;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:var(--fog);
+  display:inline-flex;
+  align-items:center;
+  gap:10px;
+  margin:0 0 18px;
+}
+.eyebrow::before{content:"";width:22px;height:1px;background:var(--ember);display:inline-block;}
+.eyebrow.z::before{background:var(--graphite-soft);}
+.eyebrow.dawn::before{background:var(--dawn);}
+
+h1,h2,h3,h4{font-family:var(--display);font-weight:600;margin:0;letter-spacing:-.01em;}
+p{margin:0;}
+
+section{padding:120px 0;position:relative;}
+@media (max-width:720px){section{padding:80px 0;}}
+
+.hairline{
+  height:2px;
+  width:100%;
+  background:linear-gradient(90deg, transparent, var(--ember) 15%, var(--fog-dim) 50%, var(--graphite) 85%, transparent);
+  opacity:.35;
+}
+
+.btn{
+  font-family:var(--mono);
+  font-size:13.5px;
+  letter-spacing:.04em;
+  text-transform:uppercase;
+  padding:14px 26px;
+  border-radius:2px;
+  display:inline-flex;
+  align-items:center;
+  gap:10px;
+  cursor:pointer;
+  border:1px solid transparent;
+  transition:transform .25s ease, background .25s ease, border-color .25s ease, color .25s ease;
+}
+.btn-primary{background:var(--cloud);color:var(--void);}
+.btn-primary:hover{background:var(--ember-soft);color:var(--cloud);transform:translateY(-2px);}
+.btn-ghost{border-color:rgba(236,238,242,0.25);color:var(--cloud);}
+.btn-ghost:hover{border-color:var(--cloud);transform:translateY(-2px);}
+
+/* ============================================================
+   NAV
+   ============================================================ */
+header.site-nav{
+  position:fixed; top:0; left:0; right:0; z-index:100;
+  backdrop-filter:blur(10px);
+  background:rgba(11,14,20,0.72);
+  border-bottom:var(--edge);
+}
+.nav-inner{
+  max-width:var(--container); margin:0 auto; padding:0 28px;
+  height:72px; display:flex; align-items:center; justify-content:space-between;
+}
+.nav-mark{font-family:var(--display); font-weight:700; font-size:20px; letter-spacing:-.02em;}
+.nav-mark span{color:var(--ember);}
+.nav-links{display:flex; gap:34px; font-family:var(--mono); font-size:13px; letter-spacing:.05em; text-transform:uppercase;}
+.nav-links a{color:var(--fog); transition:color .2s ease; position:relative; padding-bottom:4px;}
+.nav-links a:hover{color:var(--cloud);}
+.nav-cta{display:flex; align-items:center; gap:18px;}
+.nav-burger{display:none; background:none; border:none; color:var(--cloud); cursor:pointer; padding:8px;}
+@media (max-width:860px){
+  .nav-links{display:none;}
+  .nav-burger{display:block;}
+}
+
+/* mobile drawer */
+.mobile-drawer{
+  position:fixed; inset:0; z-index:99; background:var(--void);
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:28px;
+  transform:translateY(-100%); transition:transform .35s ease;
+}
+.mobile-drawer.open{transform:translateY(0);}
+.mobile-drawer a{font-family:var(--display); font-size:26px;}
+
+/* ============================================================
+   HERO
+   ============================================================ */
+.hero{
+  position:relative;
+  min-height:100svh;
+  display:flex; align-items:flex-end;
+  padding:0 0 90px;
+  overflow:hidden;
+}
+.hero-media{
+  position:absolute; inset:0; z-index:0;
+}
+.hero-media img{
+  width:100%; height:100%; object-fit:cover; object-position:center 30%;
+  filter:saturate(0.9) contrast(1.05);
+}
+.hero-media::after{
+  content:"";
+  position:absolute; inset:0;
+  background:
+    linear-gradient(180deg, rgba(11,14,20,0.35) 0%, rgba(11,14,20,0.55) 45%, rgba(11,14,20,0.96) 96%),
+    linear-gradient(90deg, rgba(11,14,20,0.55) 0%, rgba(11,14,20,0.05) 40%, rgba(11,14,20,0.05) 60%, rgba(11,14,20,0.55) 100%);
+}
+.hero-content{position:relative; z-index:2; width:100%;}
+.hero-eyebrow{font-family:var(--mono); font-size:13px; letter-spacing:.2em; text-transform:uppercase; color:var(--fog); margin-bottom:22px;}
+.hero h1{
+  font-size:clamp(58px, 11vw, 148px);
+  line-height:.92;
+  letter-spacing:-.03em;
+  margin-bottom:22px;
+}
+.hero h1 em{
+  font-style:normal;
+  background:linear-gradient(92deg, var(--ember-soft), var(--graphite-soft));
+  -webkit-background-clip:text; background-clip:text; color:transparent;
+}
+.hero-tag{font-family:var(--display); font-weight:500; font-size:clamp(19px,2.6vw,27px); color:var(--cloud); max-width:640px; margin-bottom:16px;}
+.hero-sub{font-size:16px; color:var(--fog); max-width:520px; margin-bottom:38px;}
+.hero-ctas{display:flex; gap:16px; flex-wrap:wrap;}
+.hero-scroll{
+  position:absolute; right:28px; bottom:28px; z-index:2;
+  writing-mode:vertical-rl; font-family:var(--mono); font-size:11.5px; letter-spacing:.15em;
+  text-transform:uppercase; color:var(--fog); display:flex; align-items:center; gap:12px;
+}
+.hero-scroll::after{content:""; width:1px; height:46px; background:var(--fog-dim);}
+@media (max-width:720px){ .hero-scroll{display:none;} }
+
+/* ============================================================
+   SECTION HEADS
+   ============================================================ */
+.section-head{max-width:680px; margin-bottom:64px;}
+.section-head h2{font-size:clamp(32px,4.4vw,52px); line-height:1.06;}
+.section-head p.lede{margin-top:20px; font-size:17px; color:var(--fog); max-width:560px;}
+
+/* ============================================================
+   SERVICES
+   ============================================================ */
+.services-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:rgba(236,238,242,0.08); border:var(--edge);}
+.service-card{
+  background:var(--void); padding:38px 32px; min-height:230px;
+  display:flex; flex-direction:column; justify-content:space-between;
+  transition:background .3s ease;
+}
+.service-card:hover{background:var(--mist);}
+.service-num{font-family:var(--mono); font-size:12px; color:var(--fog-dim);}
+.service-card h3{font-size:20px; margin:20px 0 10px;}
+.service-card p{color:var(--fog); font-size:14.5px; line-height:1.55;}
+@media (max-width:860px){.services-grid{grid-template-columns:1fr 1fr;}}
+@media (max-width:560px){.services-grid{grid-template-columns:1fr;}}
+
+.venture-note{
+  margin-top:44px; padding:22px 26px; border-left:2px solid var(--dawn);
+  background:rgba(217,164,65,0.05); font-size:14.5px; color:var(--fog); max-width:640px;
+}
+
+/* ============================================================
+   WHO WE HELP
+   ============================================================ */
+.help-chips{display:flex; flex-wrap:wrap; gap:12px; margin:8px 0 40px;}
+.chip{
+  font-family:var(--mono); font-size:13px; padding:10px 18px; border:1px solid rgba(236,238,242,0.15);
+  border-radius:999px; color:var(--fog); transition:border-color .2s ease, color .2s ease;
+}
+.chip:hover{border-color:var(--ember-soft); color:var(--cloud);}
+.help-rule{
+  font-family:var(--display); font-weight:500; font-size:clamp(20px,2.6vw,28px);
+  border-top:var(--edge); padding-top:32px; max-width:760px; line-height:1.4;
+}
+.help-rule span{color:var(--ember-soft);}
+
+/* ============================================================
+   IDENTITY / SIGNATURE MERGE
+   ============================================================ */
+.identity{text-align:center;}
+.identity .section-head{margin:0 auto 10px; text-align:center;}
+.identity .section-head p.lede{margin-left:auto; margin-right:auto;}
+.merge-wrap{max-width:820px; margin:56px auto 0;}
+.merge-svg{width:100%; height:auto; display:block;}
+.merge-caption{
+  display:flex; justify-content:space-between; font-family:var(--mono); font-size:12px;
+  text-transform:uppercase; letter-spacing:.1em; color:var(--fog-dim); margin-top:14px; max-width:820px; margin-left:auto; margin-right:auto;
+}
+.merge-caption .r{color:var(--ember-soft);}
+.merge-caption .z{color:var(--graphite-soft);}
+
+.identity-story{max-width:660px; margin:56px auto 0; font-size:17px; color:var(--fog); text-align:left;}
+.identity-story p{margin-bottom:16px;}
+.identity-story strong{color:var(--cloud); font-weight:600;}
+
+/* ============================================================
+   PERSONA CARDS (RT / Z)
+   ============================================================ */
+.personas{display:grid; grid-template-columns:1fr 1fr; gap:1px; background:rgba(236,238,242,0.08); border:var(--edge); margin-top:8px;}
+.persona{background:var(--void); padding:56px 44px; position:relative; overflow:hidden;}
+.persona.rt{border-top:2px solid var(--ember);}
+.persona.z{border-top:2px solid var(--graphite);}
+.persona-top{display:flex; align-items:center; gap:22px; margin-bottom:28px;}
+.persona-pfp{
+  width:88px; height:88px; border-radius:50%; overflow:hidden; flex-shrink:0;
+  border:2px solid rgba(236,238,242,0.15); background:var(--mist-2);
+}
+.persona-pfp img{width:100%; height:100%; object-fit:cover;}
+.persona-id .eyebrow{margin:0 0 6px;}
+.persona-id h3{font-size:30px;}
+.persona p.role-desc{color:var(--fog); font-size:15px; margin-bottom:26px; max-width:420px;}
+.persona-skills{display:flex; flex-wrap:wrap; gap:10px;}
+.persona-skills span{
+  font-family:var(--mono); font-size:12.5px; padding:7px 14px; border-radius:2px;
+  background:var(--mist); color:var(--fog);
+}
+.persona.rt .persona-skills span{border-left:2px solid var(--ember);}
+.persona.z .persona-skills span{border-left:2px solid var(--graphite);}
+@media (max-width:820px){.personas{grid-template-columns:1fr;}}
+
+/* ============================================================
+   STORY TIMELINE
+   ============================================================ */
+.timeline{max-width:680px; margin-top:20px;}
+.tl-item{
+  display:grid; grid-template-columns:56px 1fr; gap:22px; padding:30px 0;
+  border-top:var(--edge); opacity:0; transform:translateY(16px);
+  transition:opacity .6s ease, transform .6s ease;
+}
+.tl-item.in{opacity:1; transform:translateY(0);}
+.tl-item:last-child{border-bottom:var(--edge);}
+.tl-num{font-family:var(--mono); font-size:13px; color:var(--fog-dim); padding-top:3px;}
+.tl-body h4{font-size:20px; margin-bottom:8px; font-family:var(--display);}
+.tl-body p{color:var(--fog); font-size:15px; max-width:480px;}
+.tl-item:nth-child(1) .tl-num{color:var(--ember-soft);}
+.tl-item:nth-child(5) .tl-num{color:var(--graphite-soft);}
+
+.story-quote{
+  margin-top:56px; padding-left:26px; border-left:2px solid var(--fog-dim);
+  font-family:var(--display); font-weight:500; font-size:clamp(18px,2.2vw,24px); line-height:1.5; color:var(--cloud);
+  max-width:640px;
+}
+
+/* ============================================================
+   SYNERGY
+   ============================================================ */
+.synergy-grid{display:grid; grid-template-columns:1fr 1fr; gap:40px; margin-top:12px;}
+.synergy-card{padding:36px 34px; background:var(--mist); border-top:2px solid var(--ember);}
+.synergy-card.z{border-top-color:var(--graphite);}
+.synergy-card h4{font-size:19px; margin-bottom:14px; font-family:var(--display);}
+.synergy-chain{font-family:var(--mono); font-size:13px; color:var(--fog); line-height:2.1;}
+.synergy-chain b{color:var(--cloud); font-weight:500;}
+.synergy-thesis{
+  margin-top:44px; font-family:var(--display); font-weight:600; font-size:clamp(20px,2.8vw,30px); text-align:center; line-height:1.45;
+}
+.synergy-thesis .r{color:var(--ember-soft);}
+.synergy-thesis .z2{color:var(--graphite-soft);}
+@media (max-width:720px){.synergy-grid{grid-template-columns:1fr;}}
+
+/* ============================================================
+   VISION — one warm risk moment
+   ============================================================ */
+.vision{
+  background:radial-gradient(ellipse at 50% 110%, rgba(217,164,65,0.14), transparent 60%), var(--void);
+  text-align:center;
+}
+.vision .section-head{margin:0 auto; text-align:center;}
+.vision h2{font-size:clamp(34px,5vw,58px); max-width:760px; margin:0 auto;}
+.vision h2 .accent{color:var(--dawn);}
+.vision-body{max-width:600px; margin:30px auto 0; color:var(--fog); font-size:17px; line-height:1.75;}
+.vision-body strong{color:var(--cloud); font-weight:600;}
+.egg{
+  margin-top:70px; font-family:var(--mono); font-size:11.5px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--fog-dim); opacity:.55; transition:opacity .3s ease;
+}
+.egg:hover{opacity:1;}
+
+/* ============================================================
+   CONTACT
+   ============================================================ */
+.contact-grid{display:grid; grid-template-columns:1fr 1fr; gap:70px;}
+.contact-info h2{font-size:clamp(34px,5vw,54px); margin-bottom:22px;}
+.contact-info p{color:var(--fog); font-size:16px; max-width:400px; margin-bottom:32px;}
+.contact-direct{font-family:var(--mono); font-size:14.5px; color:var(--cloud);}
+.contact-direct a{border-bottom:1px solid var(--fog-dim); transition:border-color .2s ease, color .2s ease;}
+.contact-direct a:hover{color:var(--ember-soft); border-color:var(--ember-soft);}
+
+.form-field{margin-bottom:22px;}
+.form-field label{display:block; font-family:var(--mono); font-size:12px; text-transform:uppercase; letter-spacing:.08em; color:var(--fog); margin-bottom:8px;}
+.form-field input, .form-field textarea{
+  width:100%; background:transparent; border:none; border-bottom:1px solid rgba(236,238,242,0.2);
+  color:var(--cloud); font-family:var(--body); font-size:15px; padding:10px 2px; resize:none;
+  transition:border-color .2s ease;
+}
+.form-field input:focus, .form-field textarea:focus{outline:none; border-color:var(--ember-soft);}
+.form-note{font-size:12.5px; color:var(--fog-dim); margin-top:6px;}
+.form-status{margin-top:18px; font-family:var(--mono); font-size:13px; color:var(--graphite-soft); display:none;}
+.form-status.show{display:block;}
+@media (max-width:820px){.contact-grid{grid-template-columns:1fr; gap:48px;}}
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+footer{padding:60px 0 40px; border-top:var(--edge);}
+.footer-inner{display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:24px;}
+.footer-mark{font-family:var(--display); font-weight:700; font-size:22px;}
+.footer-mark span{color:var(--ember);}
+.footer-tag{font-family:var(--mono); font-size:12.5px; color:var(--fog-dim); margin-top:8px;}
+.footer-links{display:flex; gap:22px; font-family:var(--mono); font-size:12.5px; text-transform:uppercase; letter-spacing:.06em;}
+.footer-links a{color:var(--fog); transition:color .2s ease;}
+.footer-links a:hover{color:var(--cloud);}
+
+/* reveal on scroll */
+.reveal{opacity:0; transform:translateY(18px); transition:opacity .7s ease, transform .7s ease;}
+.reveal.in{opacity:1; transform:translateY(0);}
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     NAV
+     ============================================================ -->
+<header class="site-nav">
+  <div class="nav-inner">
+    <a href="#top" class="nav-mark">ZEN<span>REX</span></a>
+    <nav class="nav-links">
+      <a href="#services">Services</a>
+      <a href="#identity">Who We Are</a>
+      <a href="#story">Story</a>
+      <a href="#vision">Vision</a>
+      <a href="#contact">Contact</a>
+    </nav>
+    <div class="nav-cta">
+      <a href="#contact" class="btn btn-ghost" style="padding:10px 20px;">Start a project</a>
+      <button class="nav-burger" id="burgerBtn" aria-label="Open menu" aria-expanded="false">
+        <svg width="22" height="16" viewBox="0 0 22 16" fill="none"><path d="M0 1H22" stroke="currentColor" stroke-width="1.5"/><path d="M0 8H22" stroke="currentColor" stroke-width="1.5"/><path d="M0 15H22" stroke="currentColor" stroke-width="1.5"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<div class="mobile-drawer" id="mobileDrawer">
+  <a href="#services">Services</a>
+  <a href="#identity">Who We Are</a>
+  <a href="#story">Story</a>
+  <a href="#vision">Vision</a>
+  <a href="#contact">Contact</a>
+</div>
+
+<!-- ============================================================
+     01 — HERO
+     ============================================================ -->
+<section class="hero" id="top">
+  <div class="hero-media">
+    <!-- REPLACE with the wide banner photo -->
+    <img src="assets/hero-banner.jpg" alt="RT and Z standing beneath an open sky">
+  </div>
+  <div class="wrap hero-content">
+    <p class="hero-eyebrow">AI Automation Studio</p>
+    <h1>ZEN<em>REX</em></h1>
+    <p class="hero-tag">AI automation for businesses that have outgrown manual work.</p>
+    <p class="hero-sub">We design and build AI-powered systems that take repetitive, rule-driven work off your plate — so your team spends time on what actually needs a human.</p>
+    <div class="hero-ctas">
+      <a href="#services" class="btn btn-primary">Explore services</a>
+      <a href="#contact" class="btn btn-ghost">Talk to ZenRex</a>
+    </div>
+  </div>
+  <div class="hero-scroll">Scroll</div>
+</section>
+
+<!-- ============================================================
+     02 — WHAT ZENREX BUILDS
+     ============================================================ -->
+<section id="services">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <p class="eyebrow">What ZenRex Builds</p>
+      <h2>Systems that do the repetitive work, so people don't have to.</h2>
+      <p class="lede">We're not a giant consultancy. We build focused, working AI systems around the specific shape of your operation.</p>
+    </div>
+
+    <div class="services-grid reveal">
+      <div class="service-card">
+        <span class="service-num">01</span>
+        <div>
+          <h3>AI Automation</h3>
+          <p>Automate repetitive business processes using AI and modern automation tooling, end to end.</p>
+        </div>
+      </div>
+      <div class="service-card">
+        <span class="service-num">02</span>
+        <div>
+          <h3>AI Agents</h3>
+          <p>Systems that handle multi-step tasks, make decisions, and act inside the tools you already use.</p>
+        </div>
+      </div>
+      <div class="service-card">
+        <span class="service-num">03</span>
+        <div>
+          <h3>Workflow Automation</h3>
+          <p>Connect the software a business already runs on and remove the manual handoffs between them.</p>
+        </div>
+      </div>
+      <div class="service-card">
+        <span class="service-num">04</span>
+        <div>
+          <h3>Custom AI Systems</h3>
+          <p>Tailored builds around a company's specific workflow, constraints, and requirements — not templates.</p>
+        </div>
+      </div>
+      <div class="service-card">
+        <span class="service-num">05</span>
+        <div>
+          <h3>Customer Operations</h3>
+          <p>Automated inquiries, lead qualification, email handling, and internal support that runs quietly in the background.</p>
+        </div>
+      </div>
+      <div class="service-card">
+        <span class="service-num">06</span>
+        <div>
+          <h3>Integration &amp; Support</h3>
+          <p>We stay in the loop after launch — tuning, extending, and keeping systems aligned as your business changes.</p>
+        </div>
+      </div>
+    </div>
+
+    <p class="venture-note reveal">ZenRex is an independent AI automation venture. We're currently working with early partners who want practical AI in their everyday operations — not case studies, just real work.</p>
+  </div>
+</section>
+
+<div class="wrap"><div class="hairline"></div></div>
+
+<!-- ============================================================
+     03 — WHO WE HELP
+     ============================================================ -->
+<section id="who-we-help">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <p class="eyebrow z">Built For</p>
+      <h2>Businesses carrying too much manual work.</h2>
+    </div>
+    <div class="help-chips reveal">
+      <span class="chip">Repetitive admin</span>
+      <span class="chip">High-volume emails &amp; messages</span>
+      <span class="chip">Manual data entry</span>
+      <span class="chip">Lead management</span>
+      <span class="chip">Customer inquiries</span>
+      <span class="chip">Internal knowledge</span>
+      <span class="chip">Disconnected tools</span>
+    </div>
+    <p class="help-rule reveal">If a process is <span>repetitive</span>, time-consuming, and rule-driven — it's a candidate for automation.</p>
+  </div>
+</section>
+
+<!-- ============================================================
+     04 — WHO IS ZENREX (signature moment)
+     ============================================================ -->
+<section id="identity" class="identity">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <p class="eyebrow" style="justify-content:center;">Who Is ZenRex</p>
+      <h2>Two people. One identity.</h2>
+      <p class="lede">Not an agency. Not two founders running separate businesses. ZenRex is a single entity — RT and Z are its two sides.</p>
+    </div>
+
+    <div class="merge-wrap reveal">
+      <svg class="merge-svg" viewBox="0 0 820 160" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <path id="pathR" d="M0 40 C 90 40, 120 100, 210 80 C 300 60, 320 100, 410 80" stroke="#C43E2C" stroke-width="2" fill="none"/>
+        <path id="pathZ" d="M820 40 C 730 40, 700 100, 610 80 C 520 60, 500 100, 410 80" stroke="#4A5D7C" stroke-width="2" fill="none"/>
+        <circle cx="410" cy="80" r="4" fill="#ECEEF2"/>
+      </svg>
+      <div class="merge-caption">
+        <span class="r">RT — Technology</span>
+        <span class="z">Z — Business</span>
+      </div>
+    </div>
+
+    <div class="identity-story reveal">
+      <p>ZenRex is built by two people who approach the world from very different directions. One is obsessed with technology. The other is obsessed with business.</p>
+      <p>Somewhere between those two worlds, <strong>ZenRex</strong> exists — not as a partnership between two companies, but as one identity carried by two people.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     05 / 06 — RT & Z PERSONA CARDS
+     ============================================================ -->
+<section id="personas" style="padding-top:0;">
+  <div class="wrap">
+    <div class="personas reveal">
+      <div class="persona rt">
+        <div class="persona-top">
+          <div class="persona-pfp">
+            <!-- REPLACE with RT's square photo (red shirt) -->
+            <img src="assets/rt-pfp.jpg" alt="RT">
+          </div>
+          <div class="persona-id">
+            <p class="eyebrow">Technology</p>
+            <h3>RT</h3>
+          </div>
+        </div>
+        <p class="role-desc">Builds the systems underneath ZenRex — the models, the logic, the infrastructure that makes automation actually work.</p>
+        <div class="persona-skills">
+          <span>AI</span><span>Machine Learning</span><span>Deep Learning</span><span>LLMs</span><span>Mathematics</span><span>Quantitative Finance</span>
+        </div>
+      </div>
+      <div class="persona z">
+        <div class="persona-top">
+          <div class="persona-pfp">
+            <!-- REPLACE with Z's square photo -->
+            <img src="assets/z-pfp.jpg" alt="Z">
+          </div>
+          <div class="persona-id">
+            <p class="eyebrow z">Business</p>
+            <h3>Z</h3>
+          </div>
+        </div>
+        <p class="role-desc">Builds the business around ZenRex — the strategy, the growth, the relationships that turn systems into something companies actually use.</p>
+        <div class="persona-skills">
+          <span>Marketing</span><span>Sales</span><span>Business Strategy</span><span>Growth</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     07 — OUR STORY
+     ============================================================ -->
+<section id="story">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <p class="eyebrow">Our Story</p>
+      <h2>Two people. One direction.</h2>
+    </div>
+
+    <div class="timeline">
+      <div class="tl-item reveal">
+        <span class="tl-num">01</span>
+        <div class="tl-body"><h4>Friends</h4><p>The starting point — two people who happened to end up in the same place.</p></div>
+      </div>
+      <div class="tl-item reveal">
+        <span class="tl-num">02</span>
+        <div class="tl-body"><h4>Best friends</h4><p>Trust built up quietly, over time, until it stopped needing to be said.</p></div>
+      </div>
+      <div class="tl-item reveal">
+        <span class="tl-num">03</span>
+        <div class="tl-body"><h4>Something beyond a definition</h4><p>Eventually even "best friends" stopped being enough to describe it.</p></div>
+      </div>
+      <div class="tl-item reveal">
+        <span class="tl-num">04</span>
+        <div class="tl-body"><h4>Shared dreams</h4><p>Carrying each other's ambitions the way most people only carry their own.</p></div>
+      </div>
+      <div class="tl-item reveal">
+        <span class="tl-num">05</span>
+        <div class="tl-body"><h4>ZenRex</h4><p>What two people build when they stop keeping score of whose dream it was.</p></div>
+      </div>
+    </div>
+
+    <p class="story-quote reveal">We don't simply work together. We share the same dreams, carry each other's ambitions, and build as if they were our own.</p>
+  </div>
+</section>
+
+<!-- ============================================================
+     08 — WHY WE WORK TOGETHER
+     ============================================================ -->
+<section id="synergy">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <p class="eyebrow z">Why We Work Together</p>
+      <h2>Technology needs business. Business needs technology.</h2>
+    </div>
+
+    <div class="synergy-grid reveal">
+      <div class="synergy-card rt">
+        <h4>RT needs Z</h4>
+        <p class="synergy-chain">Technology <b>→</b> requires resources <b>→</b> requires business <b>→</b> requires capital</p>
+      </div>
+      <div class="synergy-card z">
+        <h4>Z needs RT</h4>
+        <p class="synergy-chain">Business <b>→</b> increasingly depends on technology <b>→</b> AI <b>→</b> automation</p>
+      </div>
+    </div>
+
+    <p class="synergy-thesis reveal"><span class="r">RT</span> builds the technology. <span class="z2">Z</span> builds the business. ZenRex is where those two worlds meet.</p>
+  </div>
+</section>
+
+<!-- ============================================================
+     09 — THE BIGGER VISION
+     ============================================================ -->
+<section id="vision" class="vision">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <p class="eyebrow dawn" style="justify-content:center;">Beyond Business</p>
+      <h2>The point isn't <span class="accent">the money.</span></h2>
+    </div>
+    <p class="vision-body reveal">
+      Money is the mechanism, not the goal. The real goal is to reach a point where we no longer <strong>have</strong> to work — build enough, learn enough, create enough, until work becomes a choice instead of a necessity. Then keep building anyway, because we want to.
+    </p>
+    <p class="egg reveal">The Captain &amp; The Swordsman — different roles, same journey.</p>
+  </div>
+</section>
+
+<!-- ============================================================
+     10 — CONTACT
+     ============================================================ -->
+<section id="contact">
+  <div class="wrap">
+    <div class="contact-grid">
+      <div class="contact-info reveal">
+        <p class="eyebrow">Contact ZenRex</p>
+        <h2>Let's build something.</h2>
+        <p>Tell us what's eating up your team's time. If it's repetitive and rule-driven, there's a good chance we can automate it.</p>
+        <p class="contact-direct">Or write directly to<br><a href="mailto:hello@zenrex.co">hello@zenrex.co</a></p>
+      </div>
+      <form class="contact-form reveal" id="contactForm">
+        <div class="form-field">
+          <label for="cf-name">Name</label>
+          <input id="cf-name" type="text" name="name" required autocomplete="name">
+        </div>
+        <div class="form-field">
+          <label for="cf-email">Email</label>
+          <input id="cf-email" type="email" name="email" required autocomplete="email">
+        </div>
+        <div class="form-field">
+          <label for="cf-company">Company</label>
+          <input id="cf-company" type="text" name="company" autocomplete="organization">
+        </div>
+        <div class="form-field">
+          <label for="cf-message">What's the repetitive work?</label>
+          <textarea id="cf-message" name="message" rows="4" required></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Send message</button>
+        <p class="form-note">This form is a visual placeholder — wire it up to your inbox or CRM before launch.</p>
+        <p class="form-status" id="formStatus">Message received — we'll get back to you shortly.</p>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     FOOTER
+     ============================================================ -->
+<footer>
+  <div class="wrap footer-inner">
+    <div>
+      <div class="footer-mark">ZEN<span>REX</span></div>
+      <p class="footer-tag">AI Automation for Businesses</p>
+    </div>
+    <div class="footer-links">
+      <a href="#" target="_blank" rel="noopener">Twitter / X</a>
+      <a href="#" target="_blank" rel="noopener">Instagram</a>
+      <a href="#" target="_blank" rel="noopener">LinkedIn</a>
+      <a href="mailto:hello@zenrex.co">Email</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+// Mobile drawer
+const burger = document.getElementById('burgerBtn');
+const drawer = document.getElementById('mobileDrawer');
+burger.addEventListener('click', () => {
+  const open = drawer.classList.toggle('open');
+  burger.setAttribute('aria-expanded', open);
+});
+drawer.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+  drawer.classList.remove('open');
+  burger.setAttribute('aria-expanded', 'false');
+}));
+
+// Scroll reveal
+const revealEls = document.querySelectorAll('.reveal, .tl-item');
+const io = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if(e.isIntersecting){
+      e.target.classList.add('in');
+      io.unobserve(e.target);
+    }
+  });
+}, {threshold:0.15, rootMargin:'0px 0px -40px 0px'});
+revealEls.forEach(el => io.observe(el));
+
+// Merge-line draw-in
+const pathR = document.getElementById('pathR');
+const pathZ = document.getElementById('pathZ');
+[pathR, pathZ].forEach(p => {
+  const len = p.getTotalLength();
+  p.style.strokeDasharray = len;
+  p.style.strokeDashoffset = len;
+});
+const mergeIo = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if(e.isIntersecting){
+      pathR.style.transition = 'stroke-dashoffset 1.4s ease';
+      pathZ.style.transition = 'stroke-dashoffset 1.4s ease';
+      pathR.style.strokeDashoffset = 0;
+      pathZ.style.strokeDashoffset = 0;
+      mergeIo.disconnect();
+    }
+  });
+}, {threshold:0.4});
+mergeIo.observe(document.querySelector('.merge-wrap'));
+
+// Contact form (visual only — no backend wired up)
+const form = document.getElementById('contactForm');
+const status = document.getElementById('formStatus');
+form.addEventListener('submit', (e) => {
+  e.preventDefault();
+  status.classList.add('show');
+  form.reset();
+});
+</script>
+</body>
+</html>
